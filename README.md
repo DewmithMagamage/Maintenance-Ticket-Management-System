@@ -9,6 +9,10 @@ End-to-end web application for reporting and tracking maintenance requests acros
 | `server/` | Node.js (Express) REST API, JWT auth, file uploads, PDF/Excel reports |
 | `client/` | React (Vite + TypeScript) UI with Tailwind CSS v4 and ShadCN-style components |
 
+### cPanel + Git hosting
+
+See **[DEPLOYMENT-CPANEL.md](./DEPLOYMENT-CPANEL.md)** for Node.js application settings, PostgreSQL, `npm run build:cpanel`, and optional **`.cpanel.yml`** / **`deploy/passenger.htaccess.example`**.
+
 ## Prerequisites
 
 - **Node.js** 20+
@@ -78,6 +82,18 @@ npm run dev
 
 App: `http://localhost:5173` — Vite proxies `/api` and `/uploads` to the API.
 
+**One command (API + web):** from the repo root, `npm install` then `npm run dev`. This avoids **502 Bad Gateway** in the browser, which usually means the UI is running but **nothing is listening on port 4000** (API not started).
+
+### Troubleshooting: “Bad Gateway” or database errors
+
+| Symptom | Likely cause | What to do |
+|--------|----------------|-------------|
+| **502** on `http://localhost:5173/api/...` | Vite proxy cannot reach the API | Start the API: `cd server && npm run dev`, or use `npm run dev` from the **repo root** after `npm install`. |
+| API exits on startup: `FAILED to connect to PostgreSQL` | Wrong `DATABASE_URL`, Postgres stopped, or SSL | Local: start Postgres (`brew services start postgresql@16`) and check `server/.env`. Cloud: use the provider’s **external** connection string; try `DATABASE_SSL=true` on Render/Railway. |
+| `self signed certificate` / TLS errors | Managed DB needs TLS | Set `DATABASE_SSL=true` (see `server/.env.example`). |
+
+Check database connectivity directly: `GET http://localhost:4000/api/health/db` — returns `200` with `"database": true` when PostgreSQL is reachable.
+
 ## Features implemented
 
 - Username/password login (JWT), role-based access (branch, department, admin)
@@ -108,7 +124,7 @@ App: `http://localhost:5173` — Vite proxies `/api` and `/uploads` to the API.
 1. New **Web Service** from this repo; **Root Directory** `server`.
 2. Build: `npm install` (default)
 3. Start: `npm start`
-4. Environment: `DATABASE_URL`, `JWT_SECRET`, `PORT` (Render sets `PORT` automatically), `CLIENT_ORIGIN` (your Vercel URL, e.g. `https://your-app.vercel.app`)
+4. Environment: `DATABASE_URL` (use the **external** URL if the API runs outside the provider’s private network), `JWT_SECRET`, `PORT` (Render sets `PORT` automatically), `CLIENT_ORIGIN` (your Vercel URL, e.g. `https://your-app.vercel.app`). If the DB requires TLS, set **`DATABASE_SSL=true`**.
 
 5. Use a managed PostgreSQL instance; run `server/db/schema.sql` once against that database, then `npm run seed` (or run seed from a one-off shell).
 

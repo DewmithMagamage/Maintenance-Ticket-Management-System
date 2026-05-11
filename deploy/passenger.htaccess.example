@@ -1,0 +1,14 @@
+# Example Apache / Phusion Passenger snippets for Node behind a domain or subdomain.
+# cPanel often generates its own `.htaccess` when you use “Setup Node.js App” — use this only
+# if your host documents manual Passenger configuration.
+#
+# Copy relevant lines into the DOCUMENT ROOT that maps to your app (adjust paths).
+
+# PassengerNodejs /home/USERNAME/nodevenv/repositories/APP/20/bin/node
+# PassengerAppRoot /home/USERNAME/repositories/bw-maintenance
+# PassengerAppType node
+# PassengerStartupFile server/src/index.js
+
+# If the panel expects the startup file under app root only:
+# PassengerStartupFile src/index.js
+# (and set PassengerAppRoot to .../bw-maintenance/server)

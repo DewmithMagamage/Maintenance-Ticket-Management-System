@@ -1,0 +1,14 @@
+# cPanel “Git™ Version Control” deployment hooks (optional).
+# If your host runs this file after `git pull`, add shell commands under `deployment.tasks`.
+# Example lines (uncomment and fix $HOME path + Node/npm location from your host):
+#
+# deployment:
+#   tasks:
+#     - cd $HOME/repositories/bw-maintenance && npm run install:all
+#     - cd $HOME/repositories/bw-maintenance && npm run build:cpanel
+#
+# See DEPLOYMENT-CPANEL.md for full steps.
+
+---
+deployment:
+  tasks: []
