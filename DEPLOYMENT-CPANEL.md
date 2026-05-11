@@ -10,8 +10,41 @@ This app is a **Node.js API** plus a **React** front end. On cPanel you usually 
 | `server/scripts/copy-frontend.mjs` | Copies `client/dist` → `server/public` after `npm run build` on the client. |
 | `npm run build:cpanel` (repo root) | Builds the React app and runs the copy script. |
 | `server/src/index.js` | Serves `server/public` (SPA) when `index.html` exists, same origin as `/api` and `/uploads`. |
-| `.cpanel.yml` | Optional Git deployment tasks (edit paths for your host). |
+| `.cpanel.yml` | Required for cPanel Git “Deploy”: valid YAML at repo root with at least one `tasks` command (included in this repo). |
 | `deploy/passenger.htaccess.example` | Example for Phusion Passenger + reverse proxy setups. |
+
+## cPanel says “invalid .cpanel.yml” or “clean working tree”
+
+Official requirements: [**Guide to Git — Deployment**](https://docs.cpanel.net/knowledge-base/web-services/guide-to-git-deployment/).
+
+### Valid `.cppanel.yml`
+
+- File must live at the **top level** of the repository (same folder as root `package.json`).
+- YAML must parse; **`deployment.tasks` must contain at least one runnable shell command** (an empty list is rejected).
+- This repo ships a minimal file that only checks `package.json` / `server/package.json` exist. Add extra `tasks` yourself if you need to copy files into `public_html`.
+
+### Clean working tree (“No uncommitted changes exist”)
+
+Means **every change is committed locally and pushed**, and **the copy on the server must not have local edits** after checkout.
+
+Do this:
+
+1. On your PC, in your project folder:
+   ```bash
+   git status
+   ```
+   If anything shows as modified, either commit or discard it:
+   ```bash
+   git add -A
+   git commit -m "Add cPanel deployment config"
+   git push origin YOUR_BRANCH
+   ```
+2. On cPanel, use **Pull** / **Update from Remote** so the server repo matches Git (no stray edited files inside the repo directory on the server).
+3. If you created `server/.env` **inside** the clone on the server, Git often sees it only if mistakenly tracked—but `.env` is gitignored. If you edited **tracked** files on the server, reset them:
+   ```bash
+   cd /path/to/clone && git reset --hard && git pull
+   ```
+   (Back up `server/.env` first if you store secrets there.)
 
 ## Requirements on the server
 

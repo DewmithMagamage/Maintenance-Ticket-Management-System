@@ -1,14 +1,14 @@
-# cPanel “Git™ Version Control” deployment hooks (optional).
-# If your host runs this file after `git pull`, add shell commands under `deployment.tasks`.
-# Example lines (uncomment and fix $HOME path + Node/npm location from your host):
-#
-# deployment:
-#   tasks:
-#     - cd $HOME/repositories/bw-maintenance && npm run install:all
-#     - cd $HOME/repositories/bw-maintenance && npm run build:cpanel
-#
-# See DEPLOYMENT-CPANEL.md for full steps.
-
 ---
+# cPanel Git Deployment (repo root). Committed copy must exist on the branch you deploy.
+# Docs: https://docs.cpanel.net/knowledge-base/web-services/guide-to-git-deployment/
+#
+# Clean working tree: commit and push from your machine; do not leave local edits on the server clone.
+
 deployment:
-  tasks: []
+  tasks:
+    # Confirms deployment runs from the repository root (where this file lives).
+    - /bin/test -f package.json
+    - /bin/test -f server/package.json
+    # Add your own lines below ONLY after confirming paths with your host, e.g. copy built files:
+    # - export DEPLOYPATH=/home/YOURUSER/public_html/
+    # - /bin/test -d server/public && /bin/cp -R server/public/. "$DEPLOYPATH"
