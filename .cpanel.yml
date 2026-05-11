@@ -6,9 +6,6 @@
 
 deployment:
   tasks:
-    # Confirms deployment runs from the repository root (where this file lives).
     - /bin/test -f package.json
-    - /bin/test -f server/package.json
-    # Add your own lines below ONLY after confirming paths with your host, e.g. copy built files:
-    # - export DEPLOYPATH=/home/YOURUSER/public_html/
-    # - /bin/test -d server/public && /bin/cp -R server/public/. "$DEPLOYPATH"
+    - /bin/test -f deploy/cpanel-deploy.sh
+    - /bin/bash deploy/cpanel-deploy.sh

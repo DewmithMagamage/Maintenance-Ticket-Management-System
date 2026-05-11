@@ -17,11 +17,11 @@ This app is a **Node.js API** plus a **React** front end. On cPanel you usually 
 
 Official requirements: [**Guide to Git — Deployment**](https://docs.cpanel.net/knowledge-base/web-services/guide-to-git-deployment/).
 
-### Valid `.cppanel.yml`
+### Valid `.cpanel.yml`
 
 - File must live at the **top level** of the repository (same folder as root `package.json`).
 - YAML must parse; **`deployment.tasks` must contain at least one runnable shell command** (an empty list is rejected).
-- This repo ships a minimal file that only checks `package.json` / `server/package.json` exist. Add extra `tasks` yourself if you need to copy files into `public_html`.
+- This repo ships `.cpanel.yml` that executes `deploy/cpanel-deploy.sh` to install dependencies and run `build:cpanel`.
 
 ### Clean working tree (“No uncommitted changes exist”)
 
@@ -105,14 +105,22 @@ Typical settings (names vary by host):
 
 | Field | Suggested value |
 |-------|------------------|
-| **Application root** | `/home/USERNAME/repositories/bw-maintenance` (your clone path) |
+| **Application root** | `/home/USERNAME/repositories/Maintenance-Ticket-Management-System` (your clone path) |
 | **Application URL** | Subdomain or folder you want (e.g. `https://maintenance.example.com`) |
 | **Application startup file** | `server/src/index.js` |
 | **Node.js version** | 20.x or newer |
 
 **Application root = repo root** is supported: startup file `server/src/index.js` and `load-env.js` read `server/.env` from disk.
 
-Alternative: set **Application root** to `.../bw-maintenance/server` and startup file `src/index.js` (same relative paths inside `server/`).
+Alternative: set **Application root** to `.../Maintenance-Ticket-Management-System/server` and startup file `src/index.js` (same relative paths inside `server/`).
+
+### Your current folder (from cPanel screenshot)
+
+Your repository location appears to be:
+
+`/home/USERNAME/repositories/Maintenance-Ticket-Management-System`
+
+Use that as **Application root** (replace `USERNAME` with your actual cPanel user).
 
 ## 5. After changing code
 
